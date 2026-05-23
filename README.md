@@ -12,8 +12,8 @@
 ---
 
 <p align="center">
-  <video src="https://github.com/Quelora/quelora/raw/main/assets/widget.webm"
-         controls muted loop playsinline width="720"></video>
+  <video src="https://github.com/Quelora/quelora/raw/main/assets/quelora_demo.mp4"
+         controls muted loop playsinline width="320"></video>
   <br/>
   <em>The widget, live. (If your viewer doesn't play it inline, see the
   <a href="https://demo.quelora.org">live demo</a>.)</em>
