@@ -11,6 +11,16 @@
 
 ---
 
+<p align="center">
+  <video src="https://github.com/Quelora/quelora/raw/main/assets/widget.webm"
+         controls muted loop playsinline width="720"></video>
+  <br/>
+  <em>The widget, live. (If your viewer doesn't play it inline, see the
+  <a href="https://demo.quelora.org">live demo</a>.)</em>
+</p>
+
+---
+
 ## What Quelora is
 
 Quelora is not "yet another Disqus alternative". It is a full **engagement
