@@ -1,0 +1,20 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Environment overrides
+.env
+.env.*
+!.env.example
+
+# Local dev / build artifacts
+node_modules/
+dist/
+build/
+.cache/

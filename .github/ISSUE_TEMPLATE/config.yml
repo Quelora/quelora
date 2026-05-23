@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Questions, ideas, or anything not a bug
+    url: https://github.com/Quelora/quelora/discussions
+    about: Use Discussions for usage questions, design ideas, and general chat.
+  - name: 🔒 Security disclosure
+    url: https://github.com/Quelora/quelora/security/policy
+    about: Please report vulnerabilities privately — see our Security Policy.
+  - name: 🤝 Want to co-maintain an area?
+    url: https://github.com/Quelora/quelora/blob/main/MAINTAINERS.md
+    about: Open ownership slots are listed here. We're actively looking.
