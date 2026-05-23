@@ -175,7 +175,7 @@ El cliente coloca en su HTML:
     // ...
   };
 </script>
-<script type="module" src="https://cdn.quelora.org/v1.0.0/quelora.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/Quelora/quelora-widget-community@v1.0.0/dist/quelora.js"></script>
 ```
 
 La versión específica (`v1.0.0`) garantiza estabilidad — el cliente no recibe
@@ -187,7 +187,7 @@ cambios inesperados hasta que actualice deliberadamente la URL.
 
 Para volver a una versión anterior, el cliente simplemente cambia la URL:
 ```html
-<script type="module" src="https://cdn.quelora.org/v0.9.0/quelora.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/Quelora/quelora-widget-community@v0.9.0/dist/quelora.js"></script>
 ```
 
 Las versiones anteriores permanecen en R2 indefinidamente a menos que se borren
@@ -206,12 +206,12 @@ wrangler r2 object list quelora-cdn --prefix="v0.9.0/"
 
 ```bash
 # Verificar que el archivo principal es accesible
-curl -I https://cdn.quelora.org/v{VERSION}/quelora.js
+curl -I https://cdn.jsdelivr.net/gh/Quelora/quelora-widget-community@v{VERSION}/dist/quelora.js
 
 # Verificar que enterprise está protegido (debe devolver 401/403)
-curl -I https://cdn.quelora.org/v{VERSION}/enterprise/survey/survey.js
+curl -I https://cdn.jsdelivr.net/gh/Quelora/quelora-widget-community@v{VERSION}/dist/enterprise/survey/survey.js
 
 # Verificar con Origin autorizado (debe devolver 200)
 curl -I -H "Origin: https://cliente.com" \
-  https://cdn.quelora.org/v{VERSION}/enterprise/survey/survey.js
+  https://cdn.jsdelivr.net/gh/Quelora/quelora-widget-community@v{VERSION}/dist/enterprise/survey/survey.js
 ```

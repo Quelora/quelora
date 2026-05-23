@@ -83,16 +83,16 @@ For the full architecture and per-service details see [docs/architecture.md](./d
     apiUrl: 'https://api.your-domain.tld'
   };
 </script>
-<script type="module" src="https://cdn.quelora.org/quelora.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/Quelora/quelora-widget-community@v1.0.0/dist/quelora.js"></script>
 ```
 
 Create a client in the dashboard, copy the `cid`, paste this snippet — done.
 
-> 🛠️ *The public CDN at `cdn.quelora.org` is being provisioned for the v1.0
-> launch. Until then, build the widget from
-> [`quelora-widget-community`](https://github.com/Quelora/quelora-widget-community)
-> (`npm install && npm run build`) and serve `dist/` from your own static
-> host. The snippet works the same — only the `src` URL changes.*
+> 📦 *Served via [jsDelivr](https://www.jsdelivr.com) from the
+> [v1.0.0 release](https://github.com/Quelora/quelora-widget-community/releases/tag/v1.0.0)
+> of `quelora-widget-community`. Pin the version (`@v1.0.0`) so future
+> releases don't change your site without warning. A branded `cdn.quelora.org`
+> is on the post-launch roadmap; jsDelivr is the canonical URL today.*
 
 ## Components
 
