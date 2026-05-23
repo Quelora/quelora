@@ -1,0 +1,147 @@
+# Quelora — production self-hosting stack
+#
+# Pulls every component from the public Docker Hub images (mrger/quelora-*).
+# Bind mounts persist data + certs + assets under ./data/.
+# A single .env file feeds every service.
+#
+# First-time setup:
+#   1. cp .env.example .env  →  edit and fill in your domain and secrets
+#   2. cp examples/nginx.conf config/nginx.conf  →  replace YOUR_DOMAIN
+#   3. Put your TLS certs in  ./data/certs/  (or wire certbot — see docs)
+#   4. mkdir -p data/{mongo,assets,geoip,certs,webroot}
+#   5. docker compose up -d
+#
+# For local development / evaluation, prefer the orchestration repo:
+#   https://github.com/Quelora/quelora-dx-env  (one `make setup`)
+
+services:
+
+  # ─── Reverse proxy + TLS termination ─────────────────────────
+  nginx:
+    image: nginx:mainline-alpine
+    container_name: quelora-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./data/certs:/etc/letsencrypt:ro
+      - ./data/webroot:/var/www/certbot
+      - ./data/assets:/srv/assets:ro
+    depends_on:
+      - app
+      - app-dashboard
+      - dashboard
+    restart: always
+    mem_limit: 128M
+
+  # ─── Admin dashboard (React SPA, served by nginx inside the image) ──
+  dashboard:
+    image: mrger/quelora-dashboard:latest
+    container_name: quelora-dashboard
+    expose:
+      - "80"
+    restart: unless-stopped
+    mem_limit: 128M
+
+  # ─── Public API (community-facing — auth, comments, profiles, …) ────
+  app:
+    image: mrger/quelora-api:latest
+    container_name: quelora-public-api
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - NODE_OPTIONS=--max-old-space-size=450
+    volumes:
+      - ./data/assets:/usr/src/app/packages/quelora-public-api/public/assets
+      - ./data/geoip:/data/geoip:ro
+    expose:
+      - "3000"
+    depends_on:
+      mongo:  { condition: service_healthy }
+      redis:  { condition: service_healthy }
+    restart: always
+    mem_limit: 600M
+
+  # ─── Dashboard API (admin backend) ───────────────────────────
+  app-dashboard:
+    image: mrger/quelora-dashboard-api:latest
+    container_name: quelora-dashboard-api
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - NODE_OPTIONS=--max-old-space-size=300
+    volumes:
+      - ./data/assets:/usr/src/app/packages/quelora-dashboard-api/public/assets
+      - ./data/geoip:/data/geoip:ro
+    expose:
+      - "3010"
+    depends_on:
+      mongo:  { condition: service_healthy }
+      redis:  { condition: service_healthy }
+    restart: always
+    mem_limit: 400M
+
+  # ─── BullMQ worker (emails, notifications, activity, aggregation) ───
+  worker:
+    image: mrger/quelora-worker:latest
+    container_name: quelora-worker
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - NODE_OPTIONS=--max-old-space-size=256
+    depends_on:
+      mongo:  { condition: service_healthy }
+      redis:  { condition: service_healthy }
+    restart: always
+    mem_limit: 350M
+
+  # ─── Scheduled jobs (reputation, suggestions, gravity decay, …) ─────
+  jobs:
+    image: mrger/quelora-jobs:latest
+    container_name: quelora-jobs
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - NODE_OPTIONS=--max-old-space-size=256
+    depends_on:
+      mongo:  { condition: service_healthy }
+      redis:  { condition: service_healthy }
+    restart: always
+    mem_limit: 350M
+
+  # ─── Redis (cache + BullMQ broker) ───────────────────────────
+  redis:
+    image: redis:alpine
+    container_name: quelora-redis
+    command: redis-server --save "" --appendonly no
+    restart: always
+    mem_limit: 128M
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  # ─── MongoDB (primary datastore) ─────────────────────────────
+  mongo:
+    image: mongo:4.4.0
+    container_name: quelora-mongo
+    volumes:
+      - ./data/mongo:/data/db
+    command: mongod --wiredTigerCacheSizeGB 0.5
+    restart: always
+    mem_limit: 2048M
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+networks:
+  default:
+    name: quelora

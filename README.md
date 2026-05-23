@@ -46,10 +46,23 @@ make up
 #   https://demo.quelora.dev        →   the widget live
 ```
 
-For production deployments, see [docs/architecture.md](./docs/architecture.md)
-and the [`quelora-dx-env`](https://github.com/Quelora/quelora-dx-env) repo —
-its Makefile is currently the canonical source of truth while a production
-self-hosting guide is being written.
+## Deploy to production
+
+The repo ships a production-grade [`docker-compose.yml`](./docker-compose.yml)
+that pulls the official images, plus a sample [nginx config](./examples/nginx.conf)
+and a comprehensive [`.env.example`](./.env.example).
+
+```bash
+git clone https://github.com/Quelora/quelora
+cd quelora
+cp .env.example .env             # ★ fill in domain + secrets
+cp examples/nginx.conf config/nginx.conf  # ★ replace YOUR_DOMAIN
+# Drop your TLS certs in ./data/certs/  (certbot, your own provisioning, …)
+mkdir -p data/{mongo,assets,geoip,certs,webroot}
+docker compose up -d
+```
+
+For the full architecture and per-service details see [docs/architecture.md](./docs/architecture.md).
 
 ## Embed the widget on any site
 
@@ -64,6 +77,12 @@ self-hosting guide is being written.
 ```
 
 Create a client in the dashboard, copy the `cid`, paste this snippet — done.
+
+> 🛠️ *The public CDN at `cdn.quelora.org` is being provisioned for the v1.0
+> launch. Until then, build the widget from
+> [`quelora-widget-community`](https://github.com/Quelora/quelora-widget-community)
+> (`npm install && npm run build`) and serve `dist/` from your own static
+> host. The snippet works the same — only the `src` URL changes.*
 
 ## Components
 

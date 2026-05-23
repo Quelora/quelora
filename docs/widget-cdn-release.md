@@ -1,7 +1,17 @@
 # Quelora Widget — CDN Release System
 
-> [↑ Docs index](../README.md) · Source: `quelora-widget-community/.ai/cdn-release.md`
-> Related: [packages/quelora-widget-community](../packages/quelora-widget-community.md)
+> [↑ Docs index](./README.md) · Related: [packages/quelora-widget-community](./packages/quelora-widget-community.md)
+
+> ⚠️ **Status — planned, not yet deployed.** This document describes the
+> intended CDN architecture (Cloudflare R2 + a small Worker for
+> enterprise-module access control). As of v1.0, the CDN itself
+> (`cdn.quelora.org`) is **not live yet** — it is on the pre-launch
+> checklist. Until it is provisioned, integrators should build the widget
+> from [`quelora-widget-community`](https://github.com/Quelora/quelora-widget-community)
+> and serve `dist/` from any static host.
+>
+> This document is published now so a co-maintainer or the project lead
+> can execute the design when the CDN is provisioned.
 
 ## 1. Arquitectura
 
@@ -25,7 +35,7 @@ Cloudflare R2 (quelora-cdn)
        └── plugins/          ← público
 
 Cloudflare Worker (cdn-guard.js)
-  └─ cdn.quelora.com/*
+  └─ cdn.quelora.org/*
        ├── /v*/enterprise/* → valida Origin en KV ALLOWED_DOMAINS → 403 si no está
        └── resto             → sirve directo desde R2
 ```
@@ -165,7 +175,7 @@ El cliente coloca en su HTML:
     // ...
   };
 </script>
-<script type="module" src="https://cdn.quelora.com/v1.0.0/quelora.js"></script>
+<script type="module" src="https://cdn.quelora.org/v1.0.0/quelora.js"></script>
 ```
 
 La versión específica (`v1.0.0`) garantiza estabilidad — el cliente no recibe
@@ -177,7 +187,7 @@ cambios inesperados hasta que actualice deliberadamente la URL.
 
 Para volver a una versión anterior, el cliente simplemente cambia la URL:
 ```html
-<script type="module" src="https://cdn.quelora.com/v0.9.0/quelora.js"></script>
+<script type="module" src="https://cdn.quelora.org/v0.9.0/quelora.js"></script>
 ```
 
 Las versiones anteriores permanecen en R2 indefinidamente a menos que se borren
@@ -196,12 +206,12 @@ wrangler r2 object list quelora-cdn --prefix="v0.9.0/"
 
 ```bash
 # Verificar que el archivo principal es accesible
-curl -I https://cdn.quelora.com/v{VERSION}/quelora.js
+curl -I https://cdn.quelora.org/v{VERSION}/quelora.js
 
 # Verificar que enterprise está protegido (debe devolver 401/403)
-curl -I https://cdn.quelora.com/v{VERSION}/enterprise/survey/survey.js
+curl -I https://cdn.quelora.org/v{VERSION}/enterprise/survey/survey.js
 
 # Verificar con Origin autorizado (debe devolver 200)
 curl -I -H "Origin: https://cliente.com" \
-  https://cdn.quelora.com/v{VERSION}/enterprise/survey/survey.js
+  https://cdn.quelora.org/v{VERSION}/enterprise/survey/survey.js
 ```
