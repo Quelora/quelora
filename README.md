@@ -6,6 +6,7 @@
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](./LICENSE)
 [![Status: first public release](https://img.shields.io/badge/status-first%20public%20release-orange.svg)](#status--honest)
+[![Support on Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/O1O020Q5P4)
 
 **[Website](https://quelora.org)** · **[Live demo](https://demo.quelora.org)** · **[Docs](./docs)** · **[Discussions](https://github.com/Quelora/quelora/discussions)**
 
